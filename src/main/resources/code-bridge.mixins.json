@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "me.shurik.codebridge.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"Draft_6455Mixin",
+		"MinecraftClientMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "code-bridge",
+	"version": "${version}",
+	"name": "Code Bridge",
+	"description": "Companion mod for VS Code extension.",
+	"authors": [
+		"shurik204"
+	],
+	"contact": {
+		"homepage": "https://shurik.me/",
+		"sources": "https://github.com/shurik204/code-bridge-mod"
+	},
+	"license": "GPL-3.0",
+	"icon": "assets/code-bridge/icon.png",
+	"environment": "*",
+	"entrypoints": {},
+	"mixins": [
+		"code-bridge.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14"
+	},
+	"suggests": {}
+}
