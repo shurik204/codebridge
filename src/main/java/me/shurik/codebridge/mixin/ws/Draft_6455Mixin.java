@@ -1,11 +1,11 @@
-package me.shurik.codebridge.mixin;
+package me.shurik.codebridge.mixin.ws;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.slf4j.Logger;
 import org.java_websocket.drafts.Draft_6455;
-import me.shurik.codebridge.data.WebSocketException;
+import me.shurik.codebridge.exception.WebSocketException;
 
 /**
  * Hack to have better stack traces

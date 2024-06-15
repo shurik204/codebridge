@@ -2,7 +2,7 @@ package me.shurik.codebridge.websocket;
 
 import com.google.gson.JsonObject;
 import me.shurik.codebridge.CodeBridge;
-import me.shurik.codebridge.data.WebSocketException;
+import me.shurik.codebridge.exception.WebSocketException;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.loader.api.FabricLoader;
@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static me.shurik.codebridge.CodeBridge.LOGGER;
+import static me.shurik.codebridge.CodeBridge.WS_LOGGER;
 
 public class EventBasedWsServer extends WebSocketServer {
     private final Map<String, Event<MessageHandler>> messageSubscriptions = new HashMap<>();
@@ -34,16 +35,15 @@ public class EventBasedWsServer extends WebSocketServer {
             throw new InvalidDataException(CloseFrame.REFUSE, "Connection refused");
         }
 
-        LOGGER.info("[WS] Client connected!");
+//        LOGGER.info("[WS] Client connected!");
         LOGGER.info("[WS] Client headers:");
         for (Iterator<String> it = request.iterateHttpFields(); it.hasNext(); ) {
             String str = it.next();
-            LOGGER.info("[WS] " + str);
+            LOGGER.info("[WS] - {}", str);
         }
 
         return super.onWebsocketHandshakeReceivedAsServer(conn, draft, request);
     }
-
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
@@ -52,14 +52,16 @@ public class EventBasedWsServer extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        LOGGER.info("[WS] Client disconnected!");
+        CodeBridge.wsClientConnected = false;
+        WS_LOGGER.info("[WS] Client disconnected!");
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
         WsMessage msg = WsMessage.parse(message);
-        //                             🔻
-        LOGGER.info("[WS] [\uD83D\uDD3B] " + msg);
+
+        if (FabricLoader.getInstance().isDevelopmentEnvironment())
+            WS_LOGGER.info("[🔻] {}", msg);
 
         // Client is not connected to a server
         if (CodeBridge.client.player == null) {
@@ -78,21 +80,22 @@ public class EventBasedWsServer extends WebSocketServer {
     @Override
     public void onError(WebSocket conn, Exception ex) {
         if (ex instanceof BindException) {
-            LOGGER.info("[WS] Unable to start WebSocket on port " + this.getPort() + "!");
+            WS_LOGGER.info("Unable to start WebSocket on port {}!", this.getPort());
             return;
         }
 
         if (ex instanceof WebSocketException wsException) {
-            LOGGER.info("[WS] WebSocketException: " + wsException.getMessage() + " (" + wsException.id + ")");
+            WS_LOGGER.info("WebSocketException: {} ({})", wsException.getMessage(), wsException.id);
             conn.send(WsMessage.error(wsException.id, wsException.getMessage()).toString());
             return;
         }
+
         conn.send(WsMessage.error(-1, ex.getMessage()).toString());
     }
 
     @Override
     public void onStart() {
-        LOGGER.info("[WS] Started on port " + this.getPort() + "!");
+        WS_LOGGER.info("Started on port {}!", this.getPort());
     }
 
     public void addMessageHandler(String key, MessageHandler handler) {

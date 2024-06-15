@@ -3,8 +3,6 @@ package me.shurik.codebridge.websocket;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import me.shurik.codebridge.CodeBridge;
 import net.minecraft.SharedConstants;
@@ -33,8 +31,6 @@ public class CodeBridgeWsServer extends EventBasedWsServer {
     }
 
     @Nullable
-    private ParseResults<CommandSource> parse;
-    @Nullable
     private CompletableFuture<Suggestions> pendingSuggestions;
     private void onCompletionRequest(WsConnection connection, JsonObject data) {
         String command = data.get("command").getAsString();
@@ -56,6 +52,7 @@ public class CodeBridgeWsServer extends EventBasedWsServer {
             connection.sendCompletionResponse(Collections.emptyList());
             return;
         }
-        connection.sendCompletionResponse(this.pendingSuggestions.join().getList().stream().map(Suggestion::getText).toList());
+
+        connection.sendCompletionResponse(this.pendingSuggestions.join().getList());
     }
 }

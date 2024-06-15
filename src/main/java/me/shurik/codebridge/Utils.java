@@ -2,7 +2,6 @@ package me.shurik.codebridge;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import me.shurik.codebridge.data.WebSocketException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -23,12 +22,5 @@ public class Utils {
         } catch (IOException e) {
             throw new JsonSyntaxException(e);
         }
-    }
-
-    public static <T> T notNull(T obj, String message) {
-        if (obj == null) {
-            throw new NullPointerException(message);
-        }
-        return obj;
     }
 }

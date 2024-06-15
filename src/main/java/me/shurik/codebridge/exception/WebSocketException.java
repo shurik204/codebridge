@@ -1,4 +1,4 @@
-package me.shurik.codebridge.data;
+package me.shurik.codebridge.exception;
 
 import org.jetbrains.annotations.Nullable;
 

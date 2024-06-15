@@ -1,10 +1,10 @@
 package me.shurik.codebridge.websocket;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.suggestion.Suggestion;
 import me.shurik.codebridge.CodeBridge;
 import me.shurik.codebridge.Utils;
-import net.minecraft.SharedConstants;
-import net.minecraft.resource.ResourceType;
 
 import java.util.Collection;
 
@@ -27,16 +27,16 @@ public record WsMessage(int id, WsMessageType type, JsonObject data) {
 
     public static WsMessage infoResponse(int id, String gameVersion, String username, boolean inSingleplayer, int datapackVersion) {
         JsonObject data = new JsonObject();
-        data.add("game_version", new JsonPrimitive(SharedConstants.getGameVersion().getName()));
-        data.add("player_name", new JsonPrimitive(CodeBridge.client.getGameProfile().getName()));
-        data.add("is_singleplayer", new JsonPrimitive(CodeBridge.client.isInSingleplayer()));
-        data.add("datapack_version", new JsonPrimitive(SharedConstants.getGameVersion().getResourceVersion(ResourceType.SERVER_DATA)));
+        data.add("game_version", new JsonPrimitive(gameVersion));
+        data.add("player_name", new JsonPrimitive(username));
+        data.add("is_singleplayer", new JsonPrimitive(inSingleplayer));
+        data.add("datapack_version", new JsonPrimitive(datapackVersion));
         return new WsMessage(id, WsMessageType.INFO_RESPONSE, data);
     }
 
-    public static WsMessage completionResponse(int id, Collection<String> suggestionsList) {
+    public static WsMessage completionResponse(int id, Collection<Suggestion> suggestionsList) {
         JsonObject data = new JsonObject();
-        data.add("suggestions", new Gson().toJsonTree(suggestionsList));
+        data.add("suggestions", CodeBridge.GSON.toJsonTree(suggestionsList));
         return new WsMessage(id, WsMessageType.COMPLETION_RESPONSE, data);
     }
 

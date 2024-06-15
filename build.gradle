@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.3-SNAPSHOT'
+	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -26,6 +26,9 @@ dependencies {
 
 	modImplementation(include(fabricApi.module("fabric-api-base", project.fabric_version)))
 
+
+	modRuntimeOnly(fabricApi.module("fabric-api", project.fabric_version))
+
 	implementation(include("org.java-websocket:Java-WebSocket:${project.java_websocket_version}"))
 }
 
@@ -38,7 +41,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
