@@ -1,6 +1,7 @@
 package me.shurik.codebridge.websocket;
 
 import com.mojang.brigadier.suggestion.Suggestion;
+import net.fabricmc.loader.api.FabricLoader;
 import org.java_websocket.WebSocket;
 
 import java.util.Collection;
@@ -15,7 +16,8 @@ public class WsConnection {
 
     public void send(WsMessage message) {
         //                             🔺
-        System.out.println("[WS] [🔺] " + message);
+        if (FabricLoader.getInstance().isDevelopmentEnvironment())
+            System.out.println("[WS] [🔺] " + message);
         webSocket.send(message.toString());
     }
 
